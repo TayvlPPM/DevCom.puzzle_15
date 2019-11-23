@@ -23,11 +23,11 @@ public class Main {
         boardLoader.shuffled("src/Puzzle15.txt",shuffledBoard.toString());
         System.out.println("------- INITIAL STATE -------");
         System.out.println(board);
+        System.out.println("Enter time for showing  one step in sec.");
+        int time = in.nextInt();
         System.out.println("------- SOLUTION -------");
         Board solvedBoard = solver.solve(board, strategy);
         boardLoader.solution("src/solution.txt", solvedBoard.getPath());
-        System.out.println("Enter time for showing  one step in sec.");
-        int time = in.nextInt();
         solver.playSolution(board,boardLoader.loadSolution("src/solution.txt"),time);
     }
 

@@ -9,8 +9,6 @@ public class BoardLoader {
 
     public int[][] load(String fileName) {
         int[][] board;
-        BufferedReader br;
-        String line;
         try {
             Scanner scanner = new Scanner(new File(fileName));
             board = new int[4][4];
