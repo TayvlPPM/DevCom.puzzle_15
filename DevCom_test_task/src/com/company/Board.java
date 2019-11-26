@@ -1,18 +1,16 @@
 package com.company;
 
-
 import java.util.Arrays;
 
 public class Board {
-    public enum DIRECTION {UP, DOWN, LEFT, RIGHT}
-    private int forbidenMove;
-    private final int[][] puzzle;
-    private int[][] correctPuzzle;
+    private final int[][] correctPuzzle = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,0}};
+    private int forbiddenMove = 8;
+    private int[][] puzzle;
     private String path = "";
     private int zeroX, zeroY;
+    private int level=0;
     public Board(int[][] puzzle) {
         this.puzzle = puzzle;
-        this.correctPuzzle = generateCorrectPuzzle(4,4);
         findZeroTile();
     }
     public Board(Board newBoard) {
@@ -20,20 +18,35 @@ public class Board {
         for (int i = 0; i < puzzle.length; i++) {
             puzzle[i] = Arrays.copyOf(newBoard.puzzle[i], puzzle[i].length);
         }
-        correctPuzzle = newBoard.correctPuzzle;
-        zeroX = newBoard.zeroX;
-        zeroY = newBoard.zeroY;
-        path = newBoard.path;
+        findZeroTile();
+        path = newBoard.getPath();
+        level= newBoard.getLevel() + 1;
     }
-    public boolean isSolved() {
-        for (int y = 0; y < puzzle.length; ++y) {
-            for (int x = 0; x < puzzle[y].length; ++x) {
-                if (puzzle[y][x] != correctPuzzle[y][x]) {
-                    return false;
+    public int manhatten(){
+        int manh=0;
+        int rx=0,ry=0;
+        for (int y=0;y<4;y++){
+            for (int x=0;x<4;x++){
+            if (puzzle[y][x]!=correctPuzzle[y][x]){
+                for (int i=0;i<4;i++){
+                    for (int j=0;j<4;j++){
+                        if (correctPuzzle[i][j]==puzzle[y][x]){
+                            ry=i;
+                            rx=j;
+                        }
+                    }
                 }
+                manh +=Math.abs(ry-y)+Math.abs(rx-x);
+            }
             }
         }
+        return manh;
+    }
+    public boolean isSolved() {
+        if (Arrays.deepEquals(puzzle, correctPuzzle))
         return true;
+        else
+            return false;
     }
 
     public boolean isSolvable() {
@@ -48,7 +61,7 @@ public class Board {
                     row = 4 - y;
                     k--;
                 }
-            k++;
+                k++;
             }
         }
         int countInversions = 0;
@@ -65,48 +78,44 @@ public class Board {
             return  true;
     }
 
-    public boolean canMove(DIRECTION direction) {
-        switch (direction) {
-            case UP:
+    public boolean canMove(int i) {
+        switch (i) {
+            case 0:     // UP
                 if (zeroY != 0) {
                     return true;
                 }
                 break;
-            case DOWN:
-                if (zeroY != puzzle.length - 1) {
+            case 1:     //RIGHT
+                if (zeroX != puzzle[zeroY].length - 1) {
                     return true;
                 }
                 break;
-            case LEFT:
+            case 2:     //LEFT
                 if (zeroX != 0) {
                     return true;
                 }
                 break;
-            case RIGHT:
-                if (zeroX != puzzle[zeroY].length - 1) {
+            case 3:     // DOWN
+                if (zeroY != puzzle.length - 1) {
                     return true;
                 }
                 break;
         }
         return false;
     }
-    public void move(DIRECTION direction) {
-        switch (direction) {
-            case UP:
-
+    public void move(int i) {
+        switch (i) {
+            case 0:         //UP
                 path += swap(zeroY, zeroX, (zeroY - 1), zeroX)+"\u2B63"+" ";
                 break;
-            case DOWN:
-
-                path += swap(zeroY, zeroX, (zeroY + 1), zeroX)+"\u2B61"+" ";
+            case 1:         //RIGHT
+                path += swap(zeroY, zeroX, zeroY, (zeroX + 1))+"\u2B60"+" ";
                 break;
-            case LEFT:
-
+            case 2:         //LEFT
                 path += swap(zeroY, zeroX, zeroY, (zeroX - 1))+"\u2B62"+" ";
                 break;
-            case RIGHT:
-
-                path += swap(zeroY, zeroX, zeroY, (zeroX + 1))+"\u2B60"+" ";
+            case 3:         //DOWN
+                path += swap(zeroY, zeroX, (zeroY + 1), zeroX)+"\u2B61"+" ";
                 break;
         }
     }
@@ -142,24 +151,17 @@ public class Board {
     }
 
     public void setForbidenMove(int i) {
-        forbidenMove = 3-i;
+        forbiddenMove = 3-i;
     }
-
     public int getMove(){
-        return forbidenMove;
+        return forbiddenMove;
     }
 
-    private static int[][] generateCorrectPuzzle(int xSize, int ySize) {
-        int[][] correctPuzzle = new int[ySize][xSize];
-        int counter = 1;
-        for (int y = 0; y < ySize; ++y) {
-            for (int x = 0; x < xSize; ++x) {
-                correctPuzzle[y][x] = counter;
-                ++counter;
-            }
-        }
-        correctPuzzle[ySize - 1][xSize - 1] = 0;
-        return correctPuzzle;
+    public int getLevel(){
+        return level;
+    }
+    public int[][] getPuzzle(){
+        return puzzle;
     }
 
     @Override

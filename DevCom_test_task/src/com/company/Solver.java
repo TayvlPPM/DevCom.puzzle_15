@@ -3,32 +3,42 @@ package com.company;
 import java.util.*;
 
 public class Solver {
-    private final Queue<Board> frontiers = new LinkedList<>();
+    private final ArrayList<Board> frontiers = new ArrayList<>();
 
-    public Board solve(Board boardToSolve, Board.DIRECTION[] strategy) {
+    public Board solve(Board boardToSolve) {
         if (boardToSolve.isSolvable()!=true){
             System.out.println("Instance of puzzle is unsolvable!");
             System.exit(0);
         }
         frontiers.add(boardToSolve);
-        while (!frontiers.isEmpty()) {
-            Board board = frontiers.poll();
-            if (board.isSolved()) {
-                return board;
-            }
-            for (int i = 0; i < strategy.length; i++) {
-                if (board.canMove(strategy[i])) {
-                    Board newBoard = new Board(board);
-                    newBoard.move(strategy[i]);
-                    newBoard.setForbidenMove(i);
-                    if (i!=board.getMove())
-                        frontiers.add(newBoard);
-
-                    }
-
+        Board board = null;
+        int i=0;
+        while(i < Integer.MAX_VALUE) {
+            int minVal = Integer.MAX_VALUE;
+            for (int iter = 0; iter < frontiers.size(); iter++) {
+                Board tmp = frontiers.get(iter);
+                if (tmp.manhatten() + tmp.getLevel() < minVal) {
+                    minVal = tmp.manhatten() + tmp.getLevel();
+                    board = tmp;
                 }
             }
-
+            for (int iter = 0; iter < 4; iter++) {
+                if (board.isSolved()) {
+                    return board;
+                } else {
+                Board newBoard = new Board(board);
+                if (newBoard.canMove(iter)) {
+                    newBoard.move(iter);
+                    if (iter != board.getMove()) {
+                        newBoard.setForbidenMove(i);
+                        frontiers.add(newBoard);
+                    }
+                }
+            }
+            }
+            frontiers.remove(board);
+            i++;
+        }
         return null;
     }
 
@@ -40,16 +50,16 @@ public class Solver {
             String direction = itr.next();
             switch (direction) {
                 case "\u2B63":
-                    boardToSolve.move(Board.DIRECTION.UP);
+                    boardToSolve.move(0);
                     break;
                 case "\u2B61":
-                    boardToSolve.move(Board.DIRECTION.DOWN);
+                    boardToSolve.move(3);
                     break;
                 case "\u2B62":
-                    boardToSolve.move(Board.DIRECTION.LEFT);
+                    boardToSolve.move(2);
                     break;
                 case "\u2B60":
-                    boardToSolve.move(Board.DIRECTION.RIGHT);
+                    boardToSolve.move(1);
                     break;
             }
             System.out.println(boardToSolve);

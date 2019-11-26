@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BoardLoader {
-    private String spliter = " ";
 
     public int[][] load(String fileName) {
         int[][] board;
@@ -36,6 +35,7 @@ public class BoardLoader {
         }
     }
     public void solution(String fileName, String content){
+        String spliter = " ";
         try(FileWriter writer = new FileWriter(fileName, false))
         {
             String[] moves = content.split(spliter);
