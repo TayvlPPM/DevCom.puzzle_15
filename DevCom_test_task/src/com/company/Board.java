@@ -20,7 +20,7 @@ public class Board {
         }
         findZeroTile();
         path = newBoard.getPath();
-        level= newBoard.getLevel() + 1;
+        level = newBoard.getLevel()+1;
     }
     public int manhatten(){
         int manh=0;
@@ -42,6 +42,77 @@ public class Board {
         }
         return manh;
     }
+
+    public int rowConflict() {
+        int test [][]=puzzle;
+        test[zeroY][zeroX]=16;
+
+        int confSum=0;
+
+        for (int row = 0; row < 4; row++){
+            switch(row){
+                case 0:{
+                    for (int col=0; col < 4; col++){
+                        if (test[row][col]>0 && test[row][col]<5){
+                            int val=test[row][col];
+                            for (int col2=col;col2<4;col2++){
+                                if (test[row][col2]>0 && test[row][col2]<5){
+                                    if (test[row][col2]<val)
+                                        confSum+=2;
+                                }
+                            }
+
+                        }
+                    }
+                }
+                case 1:{
+                    for (int col=0; col < 4; col++){
+                        if (test[row][col]>4 && test[row][col]<9){
+                            int val=test[row][col];
+                            for (int col2=col;col2<4;col2++){
+                                if (test[row][col2]>4 && test[row][col2]<9){
+                                    if (test[row][col2]<val)
+                                        confSum+=2;
+                                }
+                            }
+
+                        }
+                    }
+                }
+                case 2:{
+                    for (int col=0; col < 4; col++){
+                        if (test[row][col]>8 && test[row][col]<13){
+                            int val=test[row][col];
+                            for (int col2=col;col2<4;col2++){
+                                if (test[row][col2]>8 && test[row][col2]<13){
+                                    if (test[row][col2]<val)
+                                        confSum+=2;
+                                }
+                            }
+
+                        }
+                    }
+                }
+                case 3:{
+                    for (int col=0; col < 4; col++){
+                        if (test[row][col]>12 && test[row][col]<17){
+                            int val=test[row][col];
+                            for (int col2=col;col2<4;col2++){
+                                if (test[row][col2]>12 && test[row][col2]<17){
+                                    if (test[row][col2]<val)
+                                        confSum+=2;
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        }
+        return confSum;
+    }
+
     public boolean isSolved() {
         if (Arrays.deepEquals(puzzle, correctPuzzle))
         return true;
@@ -146,10 +217,6 @@ public class Board {
     public String getPath() {
         return path;
     }
-    public void zeroPath(){
-        path = "";
-    }
-
     public void setForbidenMove(int i) {
         forbiddenMove = 3-i;
     }
@@ -157,11 +224,11 @@ public class Board {
         return forbiddenMove;
     }
 
-    public int getLevel(){
-        return level;
-    }
     public int[][] getPuzzle(){
         return puzzle;
+    }
+    public int getLevel(){
+        return level;
     }
 
     @Override

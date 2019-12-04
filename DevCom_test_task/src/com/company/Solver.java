@@ -1,9 +1,11 @@
 package com.company;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Solver {
     private final ArrayList<Board> frontiers = new ArrayList<>();
+    private final ArrayList<String> used = new ArrayList<>();
 
     public Board solve(Board boardToSolve) {
         if (boardToSolve.isSolvable()!=true){
@@ -17,24 +19,24 @@ public class Solver {
             int minVal = Integer.MAX_VALUE;
             for (int iter = 0; iter < frontiers.size(); iter++) {
                 Board tmp = frontiers.get(iter);
-                if (tmp.manhatten() + tmp.getLevel() < minVal) {
-                    minVal = tmp.manhatten() + tmp.getLevel();
+                if (tmp.manhatten()< minVal) {
+                    minVal = tmp.manhatten();
                     board = tmp;
                 }
             }
+            used.add(Arrays.deepToString(board.getPuzzle()));
             for (int iter = 0; iter < 4; iter++) {
                 if (board.isSolved()) {
                     return board;
-                } else {
-                Board newBoard = new Board(board);
-                if (newBoard.canMove(iter)) {
-                    newBoard.move(iter);
-                    if (iter != board.getMove()) {
-                        newBoard.setForbidenMove(i);
-                        frontiers.add(newBoard);
-                    }
                 }
-            }
+                Board newBoard = new Board(board);
+                if (newBoard.canMove(iter) && board.getMove()!=iter) {
+                    newBoard.move(iter);
+                    newBoard.setForbidenMove(iter);
+                    if (used.contains(Arrays.deepToString(newBoard.getPuzzle()))!=true)
+                        frontiers.add(newBoard);
+                }
+
             }
             frontiers.remove(board);
             i++;

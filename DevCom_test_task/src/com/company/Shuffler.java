@@ -5,10 +5,10 @@ public class Shuffler {
             for (int i = 0; i < numOfMoves; i++) {
                 int m = (int)(Math.random() * 4);
                 if (boardToShuffle.canMove(m) && m!=boardToShuffle.getMove()) {
+                    boardToShuffle.setForbidenMove(m);
                     boardToShuffle.move(m);
-                } else boardToShuffle.move(3-m);
+                } else numOfMoves++;
             }
-            boardToShuffle.zeroPath();
             return boardToShuffle;
         }
 }
